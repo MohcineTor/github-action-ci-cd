@@ -51,7 +51,9 @@ jobs:
         # - name: Print Public IP
         #   run: echo ${{ steps.ip.outputs.ipv4 }}
         - name: 🔎 Check IP
-          run: curl https://api.ipify.org
+          run: |
+            PUBLIC_IP=$(curl -s https://api.ipify.org)
+            echo "Public IP address: $PUBLIC_IP"
 
         - name: Deploy to server
           run: |
@@ -59,3 +61,5 @@ jobs:
             docker ps -aq | xargs docker stop || true
             docker ps -aq | xargs docker rm || true
             docker run -d -p 5000:5000 "${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
+            docker ps 
+            curl http://$PUBLIC_IP:5000
