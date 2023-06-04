@@ -35,24 +35,23 @@ jobs:
 
         - name: Create env Virtual && Run Testes 
           run: make venv && make test
-        - uses: mr-smithers-excellent/docker-build-push@v6
 
+        - uses: mr-smithers-excellent/docker-build-push@v6
           name: Build & push Docker image
           with:
             #image: dockermohcine/test-app
             #tags: v1
             # username: ${{ secrets.DOCKER_USERNAME }}
             # password: ${{ secrets.DOCKER_PASSWORD }}
-            image: $IMAGE_NAME
-            tags: $IMAGE_TAG
+            image: ${{ env.IMAGE_NAME }}
+            tags: ${{ env.IMAGE_TAG }}
             registry: docker.io
-            username: $REGISTRY_USER
-            password: $REGISTRY_PASS
-            
+            username: ${{ env.REGISTRY_USER }}
+            password: ${{ env.REGISTRY_PASS }}
 
         - name: Deploy to server
           run: |
             ssh -o StrictHostKeyChecking=no tor@192.168.181.32 "
-              docker login -u $REGISTRY_USER -p $REGISTRY_PASS &&
+              docker login -u ${{ env.REGISTRY_USER }} -p ${{ env.REGISTRY_PASS }} &&
               docker ps -aq | xargs docker stop | xargs docker rm &&
-              docker run -d -p 5000:5000 $IMAGE_NAME:$IMAGE_TAG"
+              docker run -d -p 5000:5000 ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
