@@ -24,7 +24,6 @@ jobs:
             python-version: "3.9"
         - name: Install Make 
           run: sudo apt-get update && sudo apt-get install make 
-        - name: Create env Virtual
-          run: make venv
-        - name: Run Tests
-          run: make test
+        - name: Create env Virtual && Run Testes 
+          run: make venv && make test
+         
