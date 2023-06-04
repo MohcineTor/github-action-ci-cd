@@ -13,8 +13,8 @@ permissions:
   contents: read
 
 env:
-  REGISTRY_USER: ${{ secrets.REGISTRY_USER }}
-  REGISTRY_PASS: ${{ secrets.REGISTRY_PASS }}
+  REGISTRY_USER: ${{ secrets.DOCKER_USERNAME }}
+  REGISTRY_PASS: ${{ secrets.DOCKER_PASSWORD }}
   IMAGE_NAME: dockermohcine/test-app
   IMAGE_TAG: v2
 
