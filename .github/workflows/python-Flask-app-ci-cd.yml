@@ -13,7 +13,7 @@ permissions:
   contents: read
 
 jobs: 
-  test-ubuntu:
+  test-and-build-ubuntu:
       runs-on: ubuntu-20.04
       steps: 
         - name: Checkout Code 
@@ -26,4 +26,12 @@ jobs:
           run: sudo apt-get update && sudo apt-get install make 
         - name: Create env Virtual && Run Testes 
           run: make venv && make test
-         
+        - uses: mr-smithers-excellent/docker-build-push@v6
+          name: Build & push Docker image
+          with:
+            image: dockermohcine/test-app
+            tags: v1
+            registry: docker.io
+            username: ${{ secrets.DOCKER_USERNAME }}
+            password: ${{ secrets.DOCKER_PASSWORD }}
+          
