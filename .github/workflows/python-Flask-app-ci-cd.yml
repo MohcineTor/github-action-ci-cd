@@ -48,13 +48,13 @@ jobs:
             registry: docker.io
             username: ${{ env.REGISTRY_USER }}
             password: ${{ env.REGISTRY_PASS }}
-        - name: Print Public IP
-          run: |
-            echo ${{ steps.ip.outputs.ipv4 }}
+        # - name: Print Public IP
+        #   run: echo ${{ steps.ip.outputs.ipv4 }}
+        - name: 🔎 Check IP
+          run: curl https://api.ipify.org
 
         - name: Deploy to server
           run: |
             docker login -u ${{ env.REGISTRY_USER }} -p ${{ env.REGISTRY_PASS }}
-            docker ps -aq | xargs docker stop
-            docker ps -aq | xargs docker rm
+            docker ps -aq | xargs docker stop | xargs docker rm
             docker run -d -p 5000:5000 "${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
