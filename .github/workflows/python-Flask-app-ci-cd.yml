@@ -16,7 +16,7 @@ env:
   REGISTRY_USER: ${{ secrets.DOCKER_USERNAME }}
   REGISTRY_PASS: ${{ secrets.DOCKER_PASSWORD }}
   IMAGE_NAME: dockermohcine/test-app
-  IMAGE_TAG: v3
+  IMAGE_TAG: v4
 
 jobs: 
   test-and-build-ubuntu:
@@ -48,10 +48,13 @@ jobs:
             registry: docker.io
             username: ${{ env.REGISTRY_USER }}
             password: ${{ env.REGISTRY_PASS }}
-
-        - name: Deploy to server Arch linux
+        - name: Print Public IP
           run: |
-            ssh -o StrictHostKeyChecking=no tor@192.168.181.32 "
-              docker login -u ${{ env.REGISTRY_USER }} -p ${{ env.REGISTRY_PASS }} &&
-              docker ps -aq | xargs docker stop | xargs docker rm &&
-              docker run -d -p 5000:5000 ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
+            echo ${{ steps.ip.outputs.ipv4 }}
+
+        - name: Deploy to server
+          run: |
+            docker login -u ${{ env.REGISTRY_USER }} -p ${{ env.REGISTRY_PASS }}
+            docker ps -aq | xargs docker stop
+            docker ps -aq | xargs docker rm
+            docker run -d -p 5000:5000 "${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
