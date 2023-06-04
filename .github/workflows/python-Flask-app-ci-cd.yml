@@ -12,26 +12,47 @@ on:
 permissions:
   contents: read
 
+env:
+  REGISTRY_USER: ${{ secrets.REGISTRY_USER }}
+  REGISTRY_PASS: ${{ secrets.REGISTRY_PASS }}
+  IMAGE_NAME: dockermohcine/test-app
+  IMAGE_TAG: v2
+
 jobs: 
   test-and-build-ubuntu:
       runs-on: ubuntu-20.04
       steps: 
         - name: Checkout Code 
           uses: actions/checkout@v3
+
         - name: Sey up python
           uses: actions/setup-python@v3
           with:
             python-version: "3.9"
+
         - name: Install Make 
           run: sudo apt-get update && sudo apt-get install make 
+
         - name: Create env Virtual && Run Testes 
           run: make venv && make test
         - uses: mr-smithers-excellent/docker-build-push@v6
+
           name: Build & push Docker image
           with:
-            image: dockermohcine/test-app
-            tags: v1
+            #image: dockermohcine/test-app
+            #tags: v1
+            # username: ${{ secrets.DOCKER_USERNAME }}
+            # password: ${{ secrets.DOCKER_PASSWORD }}
+            image: $IMAGE_NAME
+            tags: $IMAGE_TAG
             registry: docker.io
-            username: ${{ secrets.DOCKER_USERNAME }}
-            password: ${{ secrets.DOCKER_PASSWORD }}
-          
+            username: $REGISTRY_USER
+            password: $REGISTRY_PASS
+            
+
+        - name: Deploy to server
+          run: |
+            ssh -o StrictHostKeyChecking=no tor@192.168.181.32 "
+              docker login -u $REGISTRY_USER -p $REGISTRY_PASS &&
+              docker ps -aq | xargs docker stop | xargs docker rm &&
+              docker run -d -p 5000:5000 $IMAGE_NAME:$IMAGE_TAG"
