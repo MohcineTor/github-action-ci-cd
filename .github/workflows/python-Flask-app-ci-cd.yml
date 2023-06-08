@@ -8,17 +8,8 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-
-permissions:
-  contents: read
-
-env:
-  REGISTRY_USER: ${{ secrets.DOCKER_USERNAME }}
-  REGISTRY_PASS: ${{ secrets.DOCKER_PASSWORD }}
-  IMAGE_NAME: dockermohcine/test-app
-  IMAGE_TAG: v6
-
-workflow_dispatch:
+  
+  workflow_dispatch:
     inputs:
       python-version:
         type: choice
@@ -28,6 +19,16 @@ workflow_dispatch:
           - "3.10"
           - "3.11"
         required: true
+  
+permissions:
+  contents: read
+
+env:
+  REGISTRY_USER: ${{ secrets.DOCKER_USERNAME }}
+  REGISTRY_PASS: ${{ secrets.DOCKER_PASSWORD }}
+  IMAGE_NAME: dockermohcine/test-app
+  IMAGE_TAG: v6
+
 #This will ensure that your workflow only runs on the latest commit for the main 
 #branch and will cancel any in-progress workflows running for the same branch or pull request.
 concurrency:
