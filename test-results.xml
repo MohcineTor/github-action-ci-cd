@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites>
+    <testsuite name="pytest" errors="0" failures="0" skipped="0" tests="4" time="2.127"
+        timestamp="2023-06-05T13:53:54.076813" hostname="L1804-00355">
+        <testcase classname="src.app.tests.test_api" name="test_api_monitor" time="0.907" />
+        <testcase classname="src.app.tests.test_views" name="test_home" time="0.004" />
+        <testcase classname="src.app.tests.test_views" name="test_page_content" time="0.001" />
+        <testcase classname="src.app.tests.test_views" name="test_info" time="1.093" />
+    </testsuite>
+</testsuites>
