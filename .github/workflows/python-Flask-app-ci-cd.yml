@@ -80,5 +80,4 @@ jobs:
             docker ps 
 
 
-        cypress /  pour les test justement 
-        jusnkins voir quelle test vq lqncer comme test sanitychecks tes.cy ca  note 
+         
