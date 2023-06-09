@@ -96,6 +96,7 @@ A working set of CI and CD release GitHub Actions workflows are provided `.githu
 
 [![](https://img.shields.io/github/last-commit/benc-uk/python-demoapp)](https://github.com/benc-uk/python-demoapp/commits/master)
 
+
 ## Running in Azure App Service (Linux)
 
 If you want to deploy to an Azure Web App as a container (aka Linux Web App), a Bicep template is provided in the [deploy](deploy/) directory

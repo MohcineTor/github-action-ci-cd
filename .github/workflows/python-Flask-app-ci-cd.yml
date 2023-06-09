@@ -4,19 +4,41 @@
 name: Python application Flask CI/CD 
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
+  # push:
+  #   branches: [ "main" ]
+  # pull_request:
+  #   branches: [ "main" ]
+  
+  workflow_dispatch:
+    inputs:
+      python-version:
+        type: choice
+        description: "Select version"
+        options:
+          - "3.9"
+          - "3.10"
+          - "3.11"
+        required: true
+  
 permissions:
   contents: read
 
 env:
   REGISTRY_USER: ${{ secrets.DOCKER_USERNAME }}
   REGISTRY_PASS: ${{ secrets.DOCKER_PASSWORD }}
+<<<<<<< HEAD
   IMAGE_NAME: ${{ secrets.DOCKER_IMAGE_NAME }}
   IMAGE_TAG: ${{ secrets.DOCKER_IMAGE_TAG }}
+=======
+  IMAGE_NAME: dockermohcine/test-app
+  IMAGE_TAG: v6
+
+#This will ensure that your workflow only runs on the latest commit for the main 
+#branch and will cancel any in-progress workflows running for the same branch or pull request.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
+>>>>>>> c3906f52ab397e7c89da0ee08ef0473206a20e48
 
 jobs: 
   test-and-build-ubuntu:
@@ -25,10 +47,11 @@ jobs:
         - name: Checkout Code 
           uses: actions/checkout@v3
 
-        - name: Sey up python
+        - name: Sey up python ${{ inputs.python-version }}
           uses: actions/setup-python@v3
           with:
-            python-version: "3.9"
+            #python-version: "3.9"
+            python-version: ${{ inputs.python-version }}
 
         - name: Install Make 
           run: sudo apt-get update && sudo apt-get install make 
@@ -36,6 +59,7 @@ jobs:
         - name: Create env Virtual && Run Testes 
           run: make venv && make test
 
+<<<<<<< HEAD
         - uses: mr-smithers-excellent/docker-build-push@v6
           name: Build & push Docker image
           with:
@@ -59,12 +83,40 @@ jobs:
         # - name: Deploy to server
         #   run: |
         #     echo "${{ vars.REGISTRY_PASS }}" | docker login -u "${{ vars.REGISTRY_USER }}" --password-stdin
+=======
+        # - uses: mr-smithers-excellent/docker-build-push@v6
+        #   name: Build & push Docker image
+        #   with:
+        #     image: ${{ env.IMAGE_NAME }}
+        #     tags: ${{ env.IMAGE_TAG }}
+        #     registry: docker.io
+        #     username: ${{ env.REGISTRY_USER }}
+        #     password: ${{ env.REGISTRY_PASS }}
+        # - name: 🔎 Check IP
+        #   run: |
+        #     PUBLIC_IP=$(curl -s https://api.ipify.org)
+        #     echo "Public IP address: $PUBLIC_IP"
+
+        # - name: Deploy to server
+        #   run: |
+        #     echo "${{ env.REGISTRY_PASS }}" | docker login -u "${{ env.REGISTRY_USER }}" --password-stdin
+>>>>>>> c3906f52ab397e7c89da0ee08ef0473206a20e48
         #     docker ps -aq | xargs docker stop || true
         #     docker ps -aq | xargs docker rm || true
         #     docker run -d -p 5000:5000 "${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
         #     docker ps 
+<<<<<<< HEAD
         #  curl http://$PUBLIC_IP:5000
         # - name: Run the app in localy
         #   run: |
         #     docker run -d -p 5000:5000 dockermohcine/test-app:v5
         #     docker ps 
+=======
+        - name: Run the app in localy
+          run: |
+            docker run -d -p 5000:5000 dockermohcine/test-app:v5
+            docker ps 
+
+
+         
+>>>>>>> c3906f52ab397e7c89da0ee08ef0473206a20e48
