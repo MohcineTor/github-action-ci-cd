@@ -15,8 +15,8 @@ permissions:
 env:
   REGISTRY_USER: ${{ secrets.DOCKER_USERNAME }}
   REGISTRY_PASS: ${{ secrets.DOCKER_PASSWORD }}
-  IMAGE_NAME: dockermohcine/test-app
-  IMAGE_TAG: v5
+  IMAGE_NAME: ${{ secrets.DOCKER_IMAGE_NAME }}
+  IMAGE_TAG: ${{ secrets.DOCKER_IMAGE_TAG }}
 
 jobs: 
   test-and-build-ubuntu:
@@ -39,27 +39,32 @@ jobs:
         - uses: mr-smithers-excellent/docker-build-push@v6
           name: Build & push Docker image
           with:
+            image: ${{ vars.IMAGE_NAME }}
+            tags: ${{ vars.IMAGE_TAG }}
+            registry: docker.io
+            username: ${{ vars.REGISTRY_USER }}
+            password: ${{ vars.REGISTRY_PASS }}
+
             #image: dockermohcine/test-app
             #tags: v1
             # username: ${{ secrets.DOCKER_USERNAME }}
             # password: ${{ secrets.DOCKER_PASSWORD }}
-            image: ${{ env.IMAGE_NAME }}
-            tags: ${{ env.IMAGE_TAG }}
-            registry: docker.io
-            username: ${{ env.REGISTRY_USER }}
-            password: ${{ env.REGISTRY_PASS }}
-        # - name: Print Public IP
-        #   run: echo ${{ steps.ip.outputs.ipv4 }}
-        - name: 🔎 Check IP
-          run: |
-            PUBLIC_IP=$(curl -s https://api.ipify.org)
-            echo "Public IP address: $PUBLIC_IP"
+            # - name: Print Public IP
+            #   run: echo ${{ steps.ip.outputs.ipv4 }}
+            # - name: 🔎 Check IP
+            #   run: |
+            #     PUBLIC_IP=$(curl -s https://api.ipify.org)
+            #     echo "Public IP address: $PUBLIC_IP"
 
-        - name: Deploy to server
-          run: |
-            echo "${{ env.REGISTRY_PASS }}" | docker login -u "${{ env.REGISTRY_USER }}" --password-stdin
-            docker ps -aq | xargs docker stop || true
-            docker ps -aq | xargs docker rm || true
-            docker run -d -p 5000:5000 "${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
-            docker ps 
-        # curl http://$PUBLIC_IP:5000
+        # - name: Deploy to server
+        #   run: |
+        #     echo "${{ vars.REGISTRY_PASS }}" | docker login -u "${{ vars.REGISTRY_USER }}" --password-stdin
+        #     docker ps -aq | xargs docker stop || true
+        #     docker ps -aq | xargs docker rm || true
+        #     docker run -d -p 5000:5000 "${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
+        #     docker ps 
+        #  curl http://$PUBLIC_IP:5000
+        # - name: Run the app in localy
+        #   run: |
+        #     docker run -d -p 5000:5000 dockermohcine/test-app:v5
+        #     docker ps 
